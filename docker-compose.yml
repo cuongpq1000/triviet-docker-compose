@@ -1,0 +1,42 @@
+version: '3.8'
+  
+services:
+  postgres:
+    image: postgres:14-alpine3.19
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=0913825888
+
+  triviet-server:
+    image: triviet-server:latest
+    container_name: triviet-server
+    build:
+      context: ../triviet
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=0913825888
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
+    depends_on:
+      - postgres
+
+  triviet-client:
+    image: triviet-client:latest
+    container_name: triviet-client
+    build:
+      context: ../triviet-client/triviet-client
+      dockerfile: Dockerfile
+    ports:
+      - 4200:4200
+    depends_on:
+      - triviet-server
+  
+
+
