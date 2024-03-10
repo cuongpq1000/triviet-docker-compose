@@ -20,7 +20,7 @@ services:
     ports:
       - 8080:8080
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=0913825888
       - SPRING_JPA_HIBERNATE_DDL_AUTO=none
@@ -31,7 +31,7 @@ services:
     image: triviet-client:latest
     container_name: triviet-client
     build:
-      context: ../triviet-client/triviet-client
+      context: ../triviet-client
       dockerfile: Dockerfile
     ports:
       - 4200:4200
