@@ -1,42 +1,30 @@
-version: '3.8'
-  
 services:
   postgres:
     image: postgres:14-alpine3.19
     container_name: postgres
     ports:
-      - 5432:5432
+      - "6432:6432"  # Exposing PostgreSQL on port 6432
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=0913825888
+    command: postgres -c 'port=6432'
+    volumes:
+      - /data/postgresql/:/var/lib/postgresql/data
+    restart: always
 
   triviet-server:
     image: triviet-server:latest
     container_name: triviet-server
     build:
-      context: ../triviet
+      context: ../tri-viet-server
       dockerfile: Dockerfile
     ports:
       - 8080:8080
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:6432/postgres  # Use "postgres" as the hostname
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=0913825888
       - SPRING_JPA_HIBERNATE_DDL_AUTO=none
     depends_on:
       - postgres
-
-  triviet-client:
-    image: triviet-client:latest
-    container_name: triviet-client
-    build:
-      context: ../triviet-client
-      dockerfile: Dockerfile
-    ports:
-      - 4200:4200
-    depends_on:
-      - triviet-server
-  
-
-
